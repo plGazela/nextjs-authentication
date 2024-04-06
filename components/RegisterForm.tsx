@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useTransition } from "react";
 import { useForm } from "react-hook-form"
 import Link from "next/link";
-import { loginSchema } from "@/lib/formsSchemas";
-import { actionLogin } from "@/actions/login";
+import { registerSchema } from "@/lib/formsSchemas";
+import { actionRegister } from "@/actions/register";
 
 import {
   Card,
@@ -29,21 +29,22 @@ import { Button } from "@/components/ui/button";
 import { LoginSocial } from "@/components/LoginSocial";
 import { LockKeyhole } from 'lucide-react';
 
-export default function LoginFrom() {
+export default function RegisterFrom() {
 
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       password: "",
+      name: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
+  const onSubmit = (values: z.infer<typeof registerSchema>) => {
     startTransition(() => {
-      actionLogin(values);
+      actionRegister(values);
     });
   }
 
@@ -52,13 +53,26 @@ export default function LoginFrom() {
       <CardHeader>
         <CardTitle className="mb-1 flex justify-center gap-2">
           <LockKeyhole />
-          Login
+          Register
         </CardTitle>
-        <CardDescription className="text-center">Please Sign In to continue</CardDescription>
+        <CardDescription className="text-center">Please register to continue</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Gazela" type="text" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -85,18 +99,18 @@ export default function LoginFrom() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isPending}>Sign In</Button>
+            <Button type="submit" className="w-full" disabled={isPending}>Create new account</Button>
           </form>
         </Form>
         <LoginSocial />
       </CardContent>
       <CardFooter className="flex justify-center gap-1">
-        <p className="text-sm text-muted-foreground">Don't have account?</p>
+        <p className="text-sm text-muted-foreground">Already registered?</p>
         <Link 
-          href="/auth/register"
+          href="/auth/login"
           className="text-sm font-medium hover:text-primary/90" 
         >
-          Sign Up
+          Log in
         </Link>
       </CardFooter>
     </Card>
