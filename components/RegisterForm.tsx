@@ -45,6 +45,8 @@ export default function RegisterFrom() {
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
     startTransition(() => {
       actionRegister(values);
+
+      // TODO: Add success/error information
     });
   }
 
