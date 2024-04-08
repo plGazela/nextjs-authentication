@@ -28,6 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LoginSocial } from "@/components/LoginSocial";
+import { ToastAction } from "@/components/ui/toast"
 import { LockKeyhole } from 'lucide-react';
 
 export default function RegisterFrom() {
@@ -51,6 +52,7 @@ export default function RegisterFrom() {
           if(response.status === 201) {
             toast({
               description: response.message,
+              action: <ToastAction altText="Log in"><Link href="/auth/login">Log in</Link></ToastAction>,
             });
           } else {
             toast({
