@@ -9,7 +9,7 @@ export async function actionRegister(values: z.infer<typeof registerSchema>) {
 
   const validateFields = registerSchema.safeParse(values);
   if(!validateFields.success) {
-    return { message: "Invalid data!" };
+    return { status: 406, message: "Provided data is not error-free." };
   }
 
   const { email, password, name } = validateFields.data;
@@ -21,7 +21,7 @@ export async function actionRegister(values: z.infer<typeof registerSchema>) {
     }
   });
   if(existingUser) {
-    return { error: "Email already taken." };
+    return { status: 418, message: "Provided e-mail is already taken." };
   }
 
   await prisma.user.create({
@@ -34,5 +34,5 @@ export async function actionRegister(values: z.infer<typeof registerSchema>) {
 
   // TODO: Send email verification
 
-  return { message: "User created." };
+  return { status: 201, message: "The account was created. Please log in." };
 }

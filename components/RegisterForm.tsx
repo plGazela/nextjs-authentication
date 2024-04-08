@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import Link from "next/link";
 import { registerSchema } from "@/lib/formsSchemas";
 import { actionRegister } from "@/actions/register";
+import { useToast } from "@/components/ui/use-toast"
 
 import {
   Card,
@@ -32,6 +33,7 @@ import { LockKeyhole } from 'lucide-react';
 export default function RegisterFrom() {
 
   const [isPending, startTransition] = useTransition();
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -44,9 +46,19 @@ export default function RegisterFrom() {
 
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
     startTransition(() => {
-      actionRegister(values);
-
-      // TODO: Add success/error information
+      actionRegister(values)
+        .then((response) => {
+          if(response.status === 201) {
+            toast({
+              description: response.message,
+            });
+          } else {
+            toast({
+              description: response.message,
+              variant: "destructive",
+            });
+          }          
+        });
     });
   }
 
