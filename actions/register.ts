@@ -4,6 +4,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/db";
 import { registerSchema } from "@/lib/formsSchemas";
+import { getUserByEmail } from "@/data/user";
 
 export async function actionRegister(values: z.infer<typeof registerSchema>) {
 
@@ -15,11 +16,7 @@ export async function actionRegister(values: z.infer<typeof registerSchema>) {
   const { email, password, name } = validateFields.data;
   const hashedPassowrd = await bcrypt.hash(password, 10);
 
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      email,
-    }
-  });
+  const existingUser = await getUserByEmail(email);
   if(existingUser) {
     return { status: 418, message: "Provided e-mail is already taken." };
   }
